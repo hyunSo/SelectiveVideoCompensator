@@ -1,11 +1,14 @@
-﻿빌드 시작: 2017-06-04 오후 11:43:48
-     1>2 노드의 "C:\Users\hyunSo\Desktop\SelectiveVideoCompensator\SelectiveVideoCompensator\SelectiveVideoCompensator.vcxproj" 프로젝트(Build 대상)입니다.
+﻿빌드 시작: 2017-06-05 오전 2:34:59
+     1>2 노드의 "C:\Users\hyunSo\Desktop\SelectiveVideoCompensator\SelectiveVideoCompensator\SelectiveVideoCompensator.vcxproj" 프로젝트(Rebuild 대상)입니다.
      1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /IC:\OpenCV241\opencv\build\include /I"C:\Program Files (x86)\Visual Leak Detector\include" /I"C:\Program Files (x86)\Visual Leak Detector\include" /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D _UNICODE /D UNICODE /D _AFXDLL /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yc"stdafx.h" /Fp"Debug\SelectiveVideoCompensator.pch" /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt stdafx.cpp
+         stdafx.cpp
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /IC:\OpenCV241\opencv\build\include /I"C:\Program Files (x86)\Visual Leak Detector\include" /I"C:\Program Files (x86)\Visual Leak Detector\include" /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D _UNICODE /D UNICODE /D _AFXDLL /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\SelectiveVideoCompensator.pch" /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt SelectiveVideoCompensator.cpp SelectiveVideoCompensatorDlg.cpp
+         SelectiveVideoCompensatorDlg.cpp
+     1>c:\opencv241\opencv\build\include\opencv2\flann\dist.h : warning C4819: 현재 코드 페이지(949)에서 표시할 수 없는 문자가 파일에 들어 있습니다. 데이터가 손실되지 않게 하려면 해당 파일을 유니코드 형식으로 저장하십시오.
          SelectiveVideoCompensator.cpp
          코드를 생성하고 있습니다...
-         건너뛰고 있습니다... (관련된 변경 내용 없음)
-         SelectiveVideoCompensatorDlg.cpp
+     1>cl : 명령줄 warning D9028: 최소 다시 빌드에 실패했습니다. 정상 빌드로 되돌립니다.
        ResourceCompile:
          C:\Program Files (x86)\Windows Kits\8.0\bin\x86\rc.exe /D _DEBUG /D _UNICODE /D UNICODE /D _AFXDLL /l"0x0412" /IDebug\ /nologo /fo"Debug\SelectiveVideoCompensator.res" SelectiveVideoCompensator.rc 
        Link:
@@ -14,8 +17,8 @@
          Debug\SelectiveVideoCompensatorDlg.obj
          Debug\stdafx.obj
          SelectiveVideoCompensator.vcxproj -> C:\Users\hyunSo\Desktop\SelectiveVideoCompensator\Debug\SelectiveVideoCompensator.exe
-     1>"C:\Users\hyunSo\Desktop\SelectiveVideoCompensator\SelectiveVideoCompensator\SelectiveVideoCompensator.vcxproj" 프로젝트를 빌드했습니다(Build 대상).
+     1>"C:\Users\hyunSo\Desktop\SelectiveVideoCompensator\SelectiveVideoCompensator\SelectiveVideoCompensator.vcxproj" 프로젝트를 빌드했습니다(Rebuild 대상).
 
 빌드했습니다.
 
-경과 시간: 00:00:02.36
+경과 시간: 00:00:07.96

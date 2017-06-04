@@ -9,7 +9,7 @@
 #include "opencv2\opencv.hpp"
 #include "opencv2\imgproc\imgproc.hpp"
 #include "opencv\cxcore.h"
-#include "opencv2\highgui.hpp"
+#include "opencv2\highgui\highgui.hpp"
 
 #include <iostream>
 
@@ -19,6 +19,11 @@ using namespace cv;
 #define new DEBUG_NEW
 #endif
 
+Mat matFrame;
+Mat matFrameCrop;
+Mat matFrameAdjust;
+int LTx, LTy, RBx, RBy;
+CSelectiveVideoCompensatorDlg* Master;
 
 // 응용 프로그램 정보에 사용되는 CAboutDlg 대화 상자입니다.
 
@@ -98,6 +103,8 @@ BEGIN_MESSAGE_MAP(CSelectiveVideoCompensatorDlg, CDialogEx)
 	ON_EN_CHANGE(IDC_EDIT5, &CSelectiveVideoCompensatorDlg::OnEnChangeEdit5)
 	ON_EN_CHANGE(IDC_EDIT6, &CSelectiveVideoCompensatorDlg::OnEnChangeEdit6)
 	ON_EN_CHANGE(IDC_EDIT7, &CSelectiveVideoCompensatorDlg::OnEnChangeEdit7)
+	ON_COMMAND(ID_EDIT_BOUNDARY, &CSelectiveVideoCompensatorDlg::OnEditBoundary)
+	ON_COMMAND(ID_EDIT_RESET, &CSelectiveVideoCompensatorDlg::OnEditReset)
 END_MESSAGE_MAP()
 
 
@@ -131,6 +138,8 @@ BOOL CSelectiveVideoCompensatorDlg::OnInitDialog()
 	m_strH.SetString(str);
 	m_strBr.SetString(str);
 	UpdateData(false); //set을 해주기 위해서 UpdateData(false); 를 사용
+
+	Master = this;
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -239,10 +248,15 @@ void CSelectiveVideoCompensatorDlg::OnFileOpen()
 			MessageBox(CString("Open Failure"));
 			return;
 		}
-
 		capture.read(matFrame);
+		LTx = LTy = 0;
+		RBx = matFrame.rows;
+		RBy = matFrame.cols;
 		DisplayImage(IDC_FRAME_ORIGIN, matFrame);
-		DisplayImage(IDC_FRAME_ADJUSTED, matFrame);
+		matFrameAdjust = matFrame.clone();
+		Rect rect(LTx, LTy, RBy, RBx);
+		rectangle(matFrameAdjust, rect, CV_RGB(255, 0, 0), 2, 8, 0); 
+		DisplayImage(IDC_FRAME_ADJUSTED, matFrameAdjust);
 		ColorHistogram(IDC_HIST_COLOR, matFrame);
 		GreyHistogram(IDC_HIST_COLOR, matFrame);
 /*
@@ -403,3 +417,57 @@ void CSelectiveVideoCompensatorDlg::OnNMReleasedcaptureSliderBrightness(NMHDR *p
 	str.Format(_T("%d"), posBr); //Format을 이용하여 int값을 변경
 	SetDlgItemText(IDC_EDIT7, str);
 }
+
+void CallBackFunc(int event, int x, int y, int flags, void* userdata)
+{
+	static int click = 0;
+	if ( event == EVENT_LBUTTONDOWN ){
+		LTx = x; LTy = y;
+		click = 1;
+	}
+	else if ( event == EVENT_LBUTTONUP && click){
+		RBx = x; RBy = y;
+		click = 0;
+		if (LTx > RBx){	int tmp = LTx; LTx = RBx; RBx = tmp;}
+		if (LTy > RBy){	int tmp = LTy; LTy = RBy; RBy = tmp;}
+		
+		matFrameCrop = matFrame.clone();
+		matFrameAdjust = matFrame.clone();
+		Rect rect(LTx, LTy, RBx - LTx, RBy - LTy);
+		rectangle(matFrameAdjust, rect, CV_RGB(255, 0, 0), 2, 8, 0); 
+		matFrame(rect).copyTo(matFrameCrop);
+
+		Master->DisplayImage(IDC_FRAME_ADJUSTED, matFrameAdjust);
+		Master->ColorHistogram(IDC_HIST_COLOR, matFrameCrop);
+		Master->GreyHistogram(IDC_HIST_COLOR, matFrameCrop);
+		
+		cvDestroyWindow("BoundarySetting");
+	}
+}
+
+void CSelectiveVideoCompensatorDlg::OnEditBoundary()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	namedWindow("BoundarySetting");
+	setMouseCallback("BoundarySetting", CallBackFunc, NULL);
+	imshow("BoundarySetting", matFrame);
+}
+
+
+void CSelectiveVideoCompensatorDlg::OnEditReset()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	LTx = LTy = 0;
+	RBx = matFrame.cols;
+	RBy = matFrame.rows;
+
+	matFrameAdjust = matFrame.clone();
+	Rect rect(LTx, LTy, RBx - LTx, RBy - LTy);
+	rectangle(matFrameAdjust, rect, CV_RGB(255, 0, 0), 2, 8, 0); 
+		
+	Master->DisplayImage(IDC_FRAME_ADJUSTED, matFrameAdjust);
+	Master->ColorHistogram(IDC_HIST_COLOR, matFrameAdjust);
+	Master->GreyHistogram(IDC_HIST_COLOR, matFrameAdjust);
+
+}
+

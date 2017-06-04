@@ -29,7 +29,6 @@ public:
 protected:
 	HICON m_hIcon;
 	CString str;
-	Mat matFrame;
 	std::string path;
 
 	// 생성된 메시지 맵 함수
@@ -67,5 +66,7 @@ public:
 	CSliderCtrl m_sliderBrightness;
 	afx_msg void OnNMReleasedcaptureSliderHistogram(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNMReleasedcaptureSliderBrightness(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnEditBoundary();
+	afx_msg void OnEditReset();
 };
 
