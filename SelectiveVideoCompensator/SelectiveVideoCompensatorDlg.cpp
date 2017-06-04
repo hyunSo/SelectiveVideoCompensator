@@ -184,7 +184,44 @@ HCURSOR CSelectiveVideoCompensatorDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+void CSelectiveVideoCompensatorDlg::DisplayImage(int IDC_PICTURE_TARGET, Mat targetMat)
+{
+	IplImage* targetIplImage = new IplImage(targetMat);
+	if(targetIplImage!=nullptr){
+		CWnd* pWnd_ImageTraget = GetDlgItem(IDC_PICTURE_TARGET);
+		CClientDC dcImageTraget(pWnd_ImageTraget);
+		RECT rcImageTraget;
+		pWnd_ImageTraget->GetClientRect(&rcImageTraget);
 
+		BITMAPINFO bitmapInfo;
+		memset(&bitmapInfo, 0, sizeof(bitmapInfo));
+		bitmapInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+		bitmapInfo.bmiHeader.biPlanes = 1;
+		bitmapInfo.bmiHeader.biCompression = BI_RGB;
+		bitmapInfo.bmiHeader.biWidth = targetIplImage->width;
+		bitmapInfo.bmiHeader.biHeight = -targetIplImage->height;
+
+		IplImage *tempImage = nullptr;
+
+		if (targetIplImage->nChannels == 1)
+		{
+			tempImage = cvCreateImage(cvSize(targetIplImage->width, targetIplImage->height), IPL_DEPTH_8U, 3);
+			cvCvtColor(targetIplImage, tempImage, CV_GRAY2BGR);
+		}
+		else if (targetIplImage->nChannels == 3)
+		{
+			tempImage = cvCloneImage(targetIplImage);
+		}
+
+		bitmapInfo.bmiHeader.biBitCount = tempImage->depth * tempImage->nChannels;
+
+		dcImageTraget.SetStretchBltMode(COLORONCOLOR);
+		::StretchDIBits(dcImageTraget.GetSafeHdc(), rcImageTraget.left, rcImageTraget.top, rcImageTraget.right, rcImageTraget.bottom,	
+			0, 0, tempImage->width, tempImage->height, tempImage->imageData, &bitmapInfo, DIB_RGB_COLORS, SRCCOPY);
+
+		cvReleaseImage(&tempImage);
+	}
+}
 
 void CSelectiveVideoCompensatorDlg::OnFileOpen()
 {
@@ -203,20 +240,93 @@ void CSelectiveVideoCompensatorDlg::OnFileOpen()
 			return;
 		}
 
-		Mat matFrame, temp;		
+		capture.read(matFrame);
+		DisplayImage(IDC_FRAME_ORIGIN, matFrame);
+		DisplayImage(IDC_FRAME_ADJUSTED, matFrame);
+		ColorHistogram(IDC_HIST_COLOR, matFrame);
+		GreyHistogram(IDC_HIST_COLOR, matFrame);
+/*
+* @Debugging
+		Mat temp;		
 		IplImage *iplFrame;//, *mask;
 		cvNamedWindow("main");
-		capture.read(matFrame);
 		temp = matFrame.clone();
 		iplFrame=&IplImage(matFrame);
 		int WIDTH=iplFrame->width;
 		int HEIGHT=iplFrame->height;
 		cvShowImage("main", iplFrame);
 		MessageBox(pathName);
+*/	
 	}
-
+	ColorHistogram(IDC_HIST_COLOR, matFrame);
 }
 
+void CSelectiveVideoCompensatorDlg::GreyHistogram(int IDC_PICTURE_TARGET, Mat targetMat){
+	Mat greyMat;
+	cvtColor(targetMat, greyMat, CV_BGR2GRAY);
+
+	MatND histogram;
+	const int* channel_numbers = { 0 };
+	float channel_range[] = { 0.0, 255.0 };
+	const float* channel_ranges = channel_range;
+	int number_bins = 255;
+
+	calcHist(&greyMat, 1, channel_numbers, Mat(), histogram, 1, &number_bins, &channel_ranges);
+
+	// Plot the histogram
+	int hist_w = 512; int hist_h = 400;
+	int bin_w = cvRound((double)hist_w / number_bins);
+
+	Mat histImage(hist_h, hist_w, CV_8UC1, Scalar(0, 0, 0));
+	normalize(histogram, histogram, 0, histImage.rows, NORM_MINMAX, -1, Mat());
+
+	for (int i = 1; i < number_bins; i++)
+	{
+		line(histImage, Point(bin_w*(i - 1), hist_h - cvRound(histogram.at<float>(i - 1))),
+			Point(bin_w*(i), hist_h - cvRound(histogram.at<float>(i))),
+			Scalar(255, 0, 0), 2, 8, 0);
+	}
+	DisplayImage(IDC_HIST_GREY, histImage);
+}
+
+void CSelectiveVideoCompensatorDlg::ColorHistogram(int IDC_PICTURE_TARGET, Mat targetMat){
+	Mat histogramB, histogramG, histogramR;
+	const int channel_numbersB[] = { 0 };  // Blue
+	const int channel_numbersG[] = { 1 };  // Green
+	const int channel_numbersR[] = { 2 };  // Red
+	float channel_range[] = { 0.0, 255.0 };
+	const float* channel_ranges = channel_range;
+	int number_bins = 255;
+
+	// R, G, B별로 각각 히스토그램을 계산한다.
+	calcHist(&targetMat, 1, channel_numbersB, Mat(), histogramB, 1, &number_bins, &channel_ranges);
+	calcHist(&targetMat, 1, channel_numbersG, Mat(), histogramG, 1, &number_bins, &channel_ranges);
+	calcHist(&targetMat, 1, channel_numbersR, Mat(), histogramR, 1, &number_bins, &channel_ranges);
+
+	// Plot the histogram
+	int hist_w = 512; int hist_h = 400;
+	int bin_w = cvRound((double)hist_w / number_bins);
+
+	Mat histImage(hist_h, hist_w, CV_8UC3, Scalar(0, 0, 0));
+	normalize(histogramB, histogramB, 0, histImage.rows, NORM_MINMAX, -1, Mat());
+	normalize(histogramG, histogramG, 0, histImage.rows, NORM_MINMAX, -1, Mat());
+	normalize(histogramR, histogramR, 0, histImage.rows, NORM_MINMAX, -1, Mat());
+
+	for (int i = 1; i < number_bins; i++)
+	{
+		line(histImage, Point(bin_w*(i - 1), hist_h - cvRound(histogramB.at<float>(i - 1))),
+			Point(bin_w*(i), hist_h - cvRound(histogramB.at<float>(i))),
+			Scalar(255, 0, 0), 2, 8, 0);
+		line(histImage, Point(bin_w*(i - 1), hist_h - cvRound(histogramG.at<float>(i - 1))),
+			Point(bin_w*(i), hist_h - cvRound(histogramG.at<float>(i))),
+			Scalar(0, 255, 0), 2, 8, 0);
+		line(histImage, Point(bin_w*(i - 1), hist_h - cvRound(histogramR.at<float>(i - 1))),
+			Point(bin_w*(i), hist_h - cvRound(histogramR.at<float>(i))),
+			Scalar(0, 0, 255), 2, 8, 0);
+	}
+
+	DisplayImage(IDC_HIST_COLOR, histImage);
+}
 
 void CSelectiveVideoCompensatorDlg::OnFileSave()
 {

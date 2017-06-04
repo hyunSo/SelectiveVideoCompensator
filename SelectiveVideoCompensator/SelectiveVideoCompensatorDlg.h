@@ -6,6 +6,9 @@
 #include "afxwin.h"
 #include "afxcmn.h"
 #include "resource.h"
+#include "opencv2/opencv.hpp"
+using namespace std;
+using namespace cv;
 #include <iostream>
 
 // CSelectiveVideoCompensatorDlg 대화 상자
@@ -26,6 +29,7 @@ public:
 protected:
 	HICON m_hIcon;
 	CString str;
+	Mat matFrame;
 	std::string path;
 
 	// 생성된 메시지 맵 함수
@@ -35,6 +39,11 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 public:
+	/* @Function: DisplayImage
+	*  Reference: http://blog.naver.com/hayandoud/220840026783" */
+	void DisplayImage(int IDC_PICTURE_TARGET, Mat targetMat);
+	void GreyHistogram(int IDC_PICTURE_TARGET, Mat targetMat);
+	void ColorHistogram(int IDC_PICTURE_TARGET, Mat targetMat);
 	afx_msg void OnFileOpen();
 	afx_msg void OnFileSave();
 	afx_msg void OnNMCustomdrawSliderR(NMHDR *pNMHDR, LRESULT *pResult);

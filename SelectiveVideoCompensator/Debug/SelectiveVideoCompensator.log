@@ -1,5 +1,21 @@
-﻿빌드 시작: 2017-06-04 오후 9:18:49
+﻿빌드 시작: 2017-06-04 오후 11:43:48
+     1>2 노드의 "C:\Users\hyunSo\Desktop\SelectiveVideoCompensator\SelectiveVideoCompensator\SelectiveVideoCompensator.vcxproj" 프로젝트(Build 대상)입니다.
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /IC:\OpenCV241\opencv\build\include /I"C:\Program Files (x86)\Visual Leak Detector\include" /I"C:\Program Files (x86)\Visual Leak Detector\include" /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D _UNICODE /D UNICODE /D _AFXDLL /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\SelectiveVideoCompensator.pch" /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt SelectiveVideoCompensator.cpp SelectiveVideoCompensatorDlg.cpp
+         SelectiveVideoCompensator.cpp
+         코드를 생성하고 있습니다...
+         건너뛰고 있습니다... (관련된 변경 내용 없음)
+         SelectiveVideoCompensatorDlg.cpp
+       ResourceCompile:
+         C:\Program Files (x86)\Windows Kits\8.0\bin\x86\rc.exe /D _DEBUG /D _UNICODE /D UNICODE /D _AFXDLL /l"0x0412" /IDebug\ /nologo /fo"Debug\SelectiveVideoCompensator.res" SelectiveVideoCompensator.rc 
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\hyunSo\Desktop\SelectiveVideoCompensator\Debug\SelectiveVideoCompensator.exe" /INCREMENTAL /NOLOGO /LIBPATH:C:\OpenCV241\opencv\build\x86\vc11\lib /LIBPATH:"C:\Program Files (x86)\Visual Leak Detector\lib\Win32" /LIBPATH:"C:\Program Files (x86)\Visual Leak Detector\lib\Win32" opencv_calib3d2413d.lib opencv_contrib2413d.lib opencv_core2413d.lib opencv_features2d2413d.lib opencv_flann2413d.lib opencv_gpu2413d.lib opencv_highgui2413d.lib opencv_imgproc2413d.lib opencv_legacy2413d.lib opencv_ml2413d.lib opencv_nonfree2413d.lib opencv_objdetect2413d.lib opencv_ocl2413d.lib opencv_photo2413d.lib opencv_stitching2413d.lib opencv_superres2413d.lib opencv_ts2413d.lib opencv_video2413d.lib opencv_videostab2413d.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /manifestinput:"C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\Include\Manifest\dpiaware.manifest" /DEBUG /PDB:"C:\Users\hyunSo\Desktop\SelectiveVideoCompensator\Debug\SelectiveVideoCompensator.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /ENTRY:"wWinMainCRTStartup" /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\hyunSo\Desktop\SelectiveVideoCompensator\Debug\SelectiveVideoCompensator.lib" /MACHINE:X86 Debug\SelectiveVideoCompensator.res
+         Debug\SelectiveVideoCompensator.obj
+         Debug\SelectiveVideoCompensatorDlg.obj
+         Debug\stdafx.obj
+         SelectiveVideoCompensator.vcxproj -> C:\Users\hyunSo\Desktop\SelectiveVideoCompensator\Debug\SelectiveVideoCompensator.exe
+     1>"C:\Users\hyunSo\Desktop\SelectiveVideoCompensator\SelectiveVideoCompensator\SelectiveVideoCompensator.vcxproj" 프로젝트를 빌드했습니다(Build 대상).
 
 빌드했습니다.
 
-경과 시간: 00:00:00.12
+경과 시간: 00:00:02.36
