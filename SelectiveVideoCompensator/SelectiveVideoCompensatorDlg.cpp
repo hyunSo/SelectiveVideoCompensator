@@ -7,9 +7,9 @@
 #include "afxdialogex.h"
 #include "opencv\cv.h"
 #include "opencv2\opencv.hpp"
-#include "opencv2\imgproc\imgproc.hpp"
 #include "opencv\cxcore.h"
 #include "opencv2\highgui\highgui.hpp"
+#include "opencv2\imgproc\imgproc.hpp"
 
 #include <iostream>
 
@@ -19,10 +19,19 @@ using namespace cv;
 #define new DEBUG_NEW
 #endif
 
+#define R  0
+#define G  1
+#define B  2
+#define H  3
+#define Br 4
+
 Mat matFrame;
 Mat matFrameCrop;
 Mat matFrameAdjust;
 int LTx, LTy, RBx, RBy;
+int posR, posG, posB, posBr;
+double posH;
+bool histoON;
 CSelectiveVideoCompensatorDlg* Master;
 
 // 응용 프로그램 정보에 사용되는 CAboutDlg 대화 상자입니다.
@@ -67,6 +76,7 @@ CSelectiveVideoCompensatorDlg::CSelectiveVideoCompensatorDlg(CWnd* pParent /*=NU
 	, m_strB(_T(""))
 	, m_strH(_T(""))
 	, m_strBr(_T(""))
+	, m_checkHistoOn(FALSE)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -84,6 +94,8 @@ void CSelectiveVideoCompensatorDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT5, m_strB);
 	DDX_Text(pDX, IDC_EDIT6, m_strH);
 	DDX_Text(pDX, IDC_EDIT7, m_strBr);
+	DDX_Check(pDX, IDC_CHECK_HISTO, m_checkHistoOn);
+	DDX_Control(pDX, IDC_CHECK_HISTO, m_checkHisto);
 }
 
 BEGIN_MESSAGE_MAP(CSelectiveVideoCompensatorDlg, CDialogEx)
@@ -105,6 +117,7 @@ BEGIN_MESSAGE_MAP(CSelectiveVideoCompensatorDlg, CDialogEx)
 	ON_EN_CHANGE(IDC_EDIT7, &CSelectiveVideoCompensatorDlg::OnEnChangeEdit7)
 	ON_COMMAND(ID_EDIT_BOUNDARY, &CSelectiveVideoCompensatorDlg::OnEditBoundary)
 	ON_COMMAND(ID_EDIT_RESET, &CSelectiveVideoCompensatorDlg::OnEditReset)
+	ON_BN_CLICKED(IDC_CHECK_HISTO, &CSelectiveVideoCompensatorDlg::OnBnClickedCheckHisto)
 END_MESSAGE_MAP()
 
 
@@ -126,17 +139,20 @@ BOOL CSelectiveVideoCompensatorDlg::OnInitDialog()
 	m_sliderGreen.SetPos(0);
 	m_sliderBlue.SetRange(0, 100);
 	m_sliderBlue.SetPos(0);
-	m_sliderHistogram.SetRange(0, 100);
-	m_sliderHistogram.SetPos(0);
+	m_sliderHistogram.SetRange(0, 200);
+	m_sliderHistogram.SetPos(100);
 	m_sliderBrightness.SetRange(0, 100);
 	m_sliderBrightness.SetPos(0);
+	posR = posG = posB = posBr = 0;
+	posH = 1.0;
 
 	str.Format(_T("%d"), 0); //Format을 이용하여 int값을 변경
 	m_strR.SetString(str);
 	m_strG.SetString(str);
 	m_strB.SetString(str);
-	m_strH.SetString(str);
 	m_strBr.SetString(str);
+	str.Format(_T("%.2lf"), 1.0); //Format을 이용하여 int값을 변경
+	m_strH.SetString(str);
 	UpdateData(false); //set을 해주기 위해서 UpdateData(false); 를 사용
 
 	Master = this;
@@ -250,11 +266,12 @@ void CSelectiveVideoCompensatorDlg::OnFileOpen()
 		}
 		capture.read(matFrame);
 		LTx = LTy = 0;
-		RBx = matFrame.rows;
-		RBy = matFrame.cols;
+		RBx = matFrame.cols;
+		RBy = matFrame.rows;
 		DisplayImage(IDC_FRAME_ORIGIN, matFrame);
+		matFrameCrop = matFrame.clone();
 		matFrameAdjust = matFrame.clone();
-		Rect rect(LTx, LTy, RBy, RBx);
+		Rect rect(LTx, LTy, RBx, RBy);
 		rectangle(matFrameAdjust, rect, CV_RGB(255, 0, 0), 2, 8, 0); 
 		DisplayImage(IDC_FRAME_ADJUSTED, matFrameAdjust);
 		ColorHistogram(IDC_HIST_COLOR, matFrame);
@@ -279,7 +296,7 @@ void CSelectiveVideoCompensatorDlg::GreyHistogram(int IDC_PICTURE_TARGET, Mat ta
 	Mat greyMat;
 	cvtColor(targetMat, greyMat, CV_BGR2GRAY);
 
-	MatND histogram;
+	Mat histogram;
 	const int* channel_numbers = { 0 };
 	float channel_range[] = { 0.0, 255.0 };
 	const float* channel_ranges = channel_range;
@@ -328,13 +345,13 @@ void CSelectiveVideoCompensatorDlg::ColorHistogram(int IDC_PICTURE_TARGET, Mat t
 
 	for (int i = 1; i < number_bins; i++)
 	{
-		line(histImage, Point(bin_w*(i - 1), hist_h - cvRound(histogramB.at<float>(i - 1))),
+		line(histImage, Point(bin_w*(i - 1), hist_h/* - cvRound(histogramB.at<float>(i - 1))*/),
 			Point(bin_w*(i), hist_h - cvRound(histogramB.at<float>(i))),
 			Scalar(255, 0, 0), 2, 8, 0);
-		line(histImage, Point(bin_w*(i - 1), hist_h - cvRound(histogramG.at<float>(i - 1))),
+		line(histImage, Point(bin_w*(i - 1), hist_h/* - cvRound(histogramG.at<float>(i - 1))*/),
 			Point(bin_w*(i), hist_h - cvRound(histogramG.at<float>(i))),
 			Scalar(0, 255, 0), 2, 8, 0);
-		line(histImage, Point(bin_w*(i - 1), hist_h - cvRound(histogramR.at<float>(i - 1))),
+		line(histImage, Point(bin_w*(i - 1), hist_h/* - cvRound(histogramR.at<float>(i - 1))*/),
 			Point(bin_w*(i), hist_h - cvRound(histogramR.at<float>(i))),
 			Scalar(0, 0, 255), 2, 8, 0);
 	}
@@ -368,13 +385,58 @@ void CSelectiveVideoCompensatorDlg::OnEnChangeEdit6()
 void CSelectiveVideoCompensatorDlg::OnEnChangeEdit7()
 {}
 
+
+void ImageCompensate(){
+	Rect rect(LTx, LTy, RBx - LTx, RBy - LTy);
+	Mat tmp = matFrame.clone();
+
+	if (histoON){
+		matFrameCrop = Mat(matFrame.clone(), rect);
+		Mat ycrcb;
+
+		cvtColor(matFrameCrop,ycrcb,CV_BGR2YCrCb);
+        vector<Mat> channels;
+        split(ycrcb,channels);
+		equalizeHist(channels[0], channels[0]);
+		merge(channels, ycrcb);
+		cvtColor(ycrcb, matFrameCrop, CV_YCrCb2BGR);
+
+		matFrameCrop.copyTo(tmp(rect));
+	}
+	matFrameAdjust = tmp.clone();	
+
+	for( int y = LTy; y < RBy; y++ ) {
+		for( int x = LTx; x < RBx; x++ ) {
+			matFrameAdjust.at<Vec3b>(y,x)[0] =
+			saturate_cast<uchar>((double)posH * (double)(tmp.at<Vec3b>(y,x)[0]) + (double)posBr + posB);
+			matFrameAdjust.at<Vec3b>(y,x)[1] =
+			saturate_cast<uchar>((double)posH * (double)(tmp.at<Vec3b>(y,x)[1]) + (double)posBr + posG);
+			matFrameAdjust.at<Vec3b>(y,x)[2] =
+			saturate_cast<uchar>((double)posH * (double)(tmp.at<Vec3b>(y,x)[2]) + (double)posBr + posR);		
+		}
+	}
+
+	Mat ROI(matFrameAdjust, rect);
+	ROI.copyTo(matFrameCrop);
+	rectangle(matFrameAdjust, rect, CV_RGB(255, 0, 0), 2, 8, 0); 
+	
+	imshow("ROI", matFrameCrop);
+
+	Master->DisplayImage(IDC_FRAME_ADJUSTED, matFrameAdjust);
+	Master->ColorHistogram(IDC_HIST_COLOR, matFrameCrop);
+	Master->GreyHistogram(IDC_HIST_COLOR, matFrameCrop);
+}
+
+
 void CSelectiveVideoCompensatorDlg::OnNMReleasedcaptureSliderRed(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	*pResult = 0;
-	int posR = m_sliderRed.GetPos();
+	int tmp = posR;
+	posR = m_sliderRed.GetPos();
 	str.Format(_T("%d"), posR); //Format을 이용하여 int값을 변경
 	SetDlgItemText(IDC_EDIT3, str);
+	ImageCompensate();
 }
 
 
@@ -382,9 +444,11 @@ void CSelectiveVideoCompensatorDlg::OnNMReleasedcaptureSliderGreen(NMHDR *pNMHDR
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	*pResult = 0;
-	int posG = m_sliderGreen.GetPos();
+	int tmp = posG;
+	posG = m_sliderGreen.GetPos();
 	str.Format(_T("%d"), posG); //Format을 이용하여 int값을 변경
 	SetDlgItemText(IDC_EDIT4, str);
+	ImageCompensate();
 }
 
 
@@ -392,9 +456,10 @@ void CSelectiveVideoCompensatorDlg::OnNMReleasedcaptureSliderBlue(NMHDR *pNMHDR,
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	*pResult = 0;
-	int posB = m_sliderBlue.GetPos();
+	posB = m_sliderBlue.GetPos();
 	str.Format(_T("%d"), posB); //Format을 이용하여 int값을 변경
 	SetDlgItemText(IDC_EDIT5, str);
+	ImageCompensate();
 }
 
 
@@ -403,9 +468,10 @@ void CSelectiveVideoCompensatorDlg::OnNMReleasedcaptureSliderHistogram(NMHDR *pN
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	*pResult = 0;
-	int posH = m_sliderHistogram.GetPos();
-	str.Format(_T("%d"), posH); //Format을 이용하여 int값을 변경
+	posH = (double)m_sliderHistogram.GetPos()/100.0;
+	str.Format(_T("%.2lf"), posH); //Format을 이용하여 int값을 변경
 	SetDlgItemText(IDC_EDIT6, str);
+	ImageCompensate();
 }
 
 
@@ -413,10 +479,27 @@ void CSelectiveVideoCompensatorDlg::OnNMReleasedcaptureSliderBrightness(NMHDR *p
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	*pResult = 0;
-	int posBr = m_sliderBrightness.GetPos();
+	int tmp = posBr;
+	posBr = m_sliderBrightness.GetPos();
 	str.Format(_T("%d"), posBr); //Format을 이용하여 int값을 변경
 	SetDlgItemText(IDC_EDIT7, str);
+	ImageCompensate();
 }
+
+
+void CSelectiveVideoCompensatorDlg::OnBnClickedCheckHisto()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	UpdateData(TRUE);
+   if (m_checkHistoOn){
+		histoON = true;
+	}
+   else{
+		histoON = false;
+	}
+	ImageCompensate();
+}
+
 
 void CallBackFunc(int event, int x, int y, int flags, void* userdata)
 {
@@ -430,12 +513,17 @@ void CallBackFunc(int event, int x, int y, int flags, void* userdata)
 		click = 0;
 		if (LTx > RBx){	int tmp = LTx; LTx = RBx; RBx = tmp;}
 		if (LTy > RBy){	int tmp = LTy; LTy = RBy; RBy = tmp;}
-		
-		matFrameCrop = matFrame.clone();
+
 		matFrameAdjust = matFrame.clone();
 		Rect rect(LTx, LTy, RBx - LTx, RBy - LTy);
 		rectangle(matFrameAdjust, rect, CV_RGB(255, 0, 0), 2, 8, 0); 
-		matFrame(rect).copyTo(matFrameCrop);
+		Mat ROI(matFrame, rect);
+		ROI.copyTo(matFrameCrop);
+
+		cvDestroyWindow("ROI");
+		namedWindow("ROI", CV_WINDOW_AUTOSIZE);
+		resizeWindow("ROI", RBx - LTx, RBy - LTy);
+		imshow("ROI", matFrameCrop);
 
 		Master->DisplayImage(IDC_FRAME_ADJUSTED, matFrameAdjust);
 		Master->ColorHistogram(IDC_HIST_COLOR, matFrameCrop);
@@ -448,6 +536,9 @@ void CallBackFunc(int event, int x, int y, int flags, void* userdata)
 void CSelectiveVideoCompensatorDlg::OnEditBoundary()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	histoON = false;
+	CheckDlgButton(IDC_CHECK_HISTO, false);
+
 	namedWindow("BoundarySetting");
 	setMouseCallback("BoundarySetting", CallBackFunc, NULL);
 	imshow("BoundarySetting", matFrame);
@@ -460,6 +551,8 @@ void CSelectiveVideoCompensatorDlg::OnEditReset()
 	LTx = LTy = 0;
 	RBx = matFrame.cols;
 	RBy = matFrame.rows;
+	histoON = false;
+	CheckDlgButton(IDC_CHECK_HISTO, false);
 
 	matFrameAdjust = matFrame.clone();
 	Rect rect(LTx, LTy, RBx - LTx, RBy - LTy);
@@ -468,6 +561,6 @@ void CSelectiveVideoCompensatorDlg::OnEditReset()
 	Master->DisplayImage(IDC_FRAME_ADJUSTED, matFrameAdjust);
 	Master->ColorHistogram(IDC_HIST_COLOR, matFrameAdjust);
 	Master->GreyHistogram(IDC_HIST_COLOR, matFrameAdjust);
-
 }
+
 
