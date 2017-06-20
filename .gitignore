@@ -33,6 +33,7 @@
 
 #example files
 *.mp4
+*.avi
 
 #data files
 *.sdf

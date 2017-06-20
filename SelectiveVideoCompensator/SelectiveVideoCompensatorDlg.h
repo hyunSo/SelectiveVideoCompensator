@@ -30,6 +30,8 @@ protected:
 	HICON m_hIcon;
 	CString str;
 	std::string path;
+	VideoCapture capture;
+	VideoWriter writer;
 
 	// 생성된 메시지 맵 함수
 	virtual BOOL OnInitDialog();
@@ -38,6 +40,7 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 public:
+	void Initialize_GUIs();
 	/* @Function: DisplayImage
 	*  Reference: http://blog.naver.com/hayandoud/220840026783" */
 	void DisplayImage(int IDC_PICTURE_TARGET, Mat targetMat);
@@ -60,16 +63,24 @@ public:
 	afx_msg void OnNMReleasedcaptureSliderBlue(NMHDR *pNMHDR, LRESULT *pResult);
 	CSliderCtrl m_sliderHistogram;
 	CSliderCtrl m_sliderBrightness;
+	CSliderCtrl m_sliderSmoothing;
 	CString m_strBr;
 	CString m_strH;
 	afx_msg void OnEnChangeEdit6();
 	afx_msg void OnEnChangeEdit7();
 	afx_msg void OnNMReleasedcaptureSliderHistogram(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNMReleasedcaptureSliderBrightness(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg void OnEditBoundary();
-	afx_msg void OnEditReset();
+	afx_msg void OnNMReleasedcaptureSliderSmoothing(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnBnClickedCheckHisto();
 	BOOL m_checkHistoOn;
 	CButton m_checkHisto;
+	CComboBox m_comboCodec;
+	CButton m_Codec;
+	afx_msg void OnBnClickedStart();
+
+	afx_msg void OnEditBoundary();
+	afx_msg void OnEditReset();
+	CEdit m_videoTitle;
+	CString m_Title;
 };
 
