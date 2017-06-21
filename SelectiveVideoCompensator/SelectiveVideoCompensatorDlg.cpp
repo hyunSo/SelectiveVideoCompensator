@@ -597,8 +597,9 @@ void CSelectiveVideoCompensatorDlg::OnEditReset()
 void CSelectiveVideoCompensatorDlg::OnBnClickedStart()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	CT2CA path_(m_Title.GetString());
-	string newPath(path_);
+	CString path_;
+	GetDlgItemText(IDC_TITLE, path_);
+	string newPath((CT2CA)path_);
 
 	switch(m_comboCodec.GetCurSel()){
 		case PIM1:
