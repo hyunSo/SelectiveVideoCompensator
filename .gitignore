@@ -39,3 +39,9 @@
 #data files
 *.sdf
 *.ipch
+*.idb
+*.log
+*.plog
+*.vcxproj
+*.ipch
+*.pdb
