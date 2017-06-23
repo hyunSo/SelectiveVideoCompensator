@@ -89,13 +89,13 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(OPENCV_BUILD)\..\..\include;C:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\openCV3\opencv\build\install\include;$(OPENCV_BUILD)\..\..\include;C:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(OPENCV_BUILD)\staticlib;$(OPENCV_BUILD)\lib;C:\Program Files (x86)\Visual Leak Detector\lib\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opencv_ts300d.lib;opencv_world300d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\openCV3\opencv\build\install\x86\vc11\lib;$(OPENCV_BUILD)\staticlib;$(OPENCV_BUILD)\lib;C:\Program Files (x86)\Visual Leak Detector\lib\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opencv_ts300d.lib;opencv_world300d.lib;opencv_bgsegm300d.lib;opencv_bioinspired300d.lib;opencv_calib3d300d.lib;opencv_ccalib300d.lib;opencv_core300d.lib;opencv_dpm300d.lib;opencv_face300d.lib;opencv_features2d300d.lib;opencv_flann300d.lib;opencv_fuzzy300d.lib;opencv_hal300d.lib;opencv_highgui300d.lib;opencv_imgcodecs300d.lib;opencv_imgproc300d.lib;opencv_line_descriptor300d.lib;opencv_ml300d.lib;opencv_objdetect300d.lib;opencv_phase_unwrapping300d.lib;opencv_photo300d.lib;opencv_plot300d.lib;opencv_reg300d.lib;opencv_rgbd300d.lib;opencv_saliency300d.lib;opencv_shape300d.lib;opencv_stereo300d.lib;opencv_stitching300d.lib;opencv_structured_light300d.lib;opencv_superres300d.lib;opencv_surface_matching300d.lib;opencv_tracking300d.lib;opencv_video300d.lib;opencv_videoio300d.lib;opencv_videostab300d.lib;opencv_xobjdetect300d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -115,13 +115,13 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(OPENCV_BUILD)\..\..\include;C:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\openCV3\opencv\build\install\include;$(OPENCV_BUILD)\..\..\include;C:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(OPENCV_BUILD)\staticlib;$(OPENCV_BUILD)\lib;C:\Program Files (x86)\Visual Leak Detector\lib\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opencv_ts300d.lib;opencv_world300d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\openCV3\opencv\build\install\x86\vc11\staticlib;C:\openCV3\opencv\build\install\x86\vc11\lib;$(OPENCV_BUILD)\staticlib;$(OPENCV_BUILD)\lib;C:\Program Files (x86)\Visual Leak Detector\lib\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opencv_bgsegm300d.lib;opencv_ts300d.lib;opencv_world300d.lib;opencv_bioinspired300d.lib;opencv_calib3d300d.lib;opencv_ccalib300d.lib;opencv_core300d.lib;opencv_dpm300d.lib;opencv_face300d.lib;opencv_features2d300d.lib;opencv_flann300d.lib;opencv_fuzzy300d.lib;opencv_hal300d.lib;opencv_highgui300d.lib;opencv_imgcodecs300d.lib;opencv_imgproc300d.lib;opencv_line_descriptor300d.lib;opencv_ml300d.lib;opencv_objdetect300d.lib;opencv_phase_unwrapping300d.lib;opencv_photo300d.lib;opencv_plot300d.lib;opencv_reg300d.lib;opencv_rgbd300d.lib;opencv_saliency300d.lib;opencv_shape300d.lib;opencv_stereo300d.lib;opencv_stitching300d.lib;opencv_structured_light300d.lib;opencv_superres300d.lib;opencv_surface_matching300d.lib;opencv_tracking300d.lib;opencv_video300d.lib;opencv_videoio300d.lib;opencv_videostab300d.lib;opencv_xobjdetect300d.lib;ippicvmt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>

@@ -1,25 +1,15 @@
-﻿빌드 시작: 2017-06-21 오후 8:08:16
+﻿빌드 시작: 2017-06-23 오후 11:04:38
      1>2 노드의 "C:\Users\hyunSo\Desktop\SelectiveVideoCompensator\SelectiveVideoCompensator\SelectiveVideoCompensator.vcxproj" 프로젝트(Build 대상)입니다.
-     1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\x86_amd64\CL.exe /c /IC:\openCV3\opencv\build\x64\vc11\..\..\include /I"C:\Program Files (x86)\Visual Leak Detector\include" /I"C:\Program Files (x86)\Visual Leak Detector\include" /Zi /nologo /W3 /WX- /sdl /Od /D WIN32 /D _WINDOWS /D _DEBUG /D _UNICODE /D UNICODE /D _AFXDLL /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"x64\Debug\SelectiveVideoCompensator.pch" /Fo"x64\Debug\\" /Fd"x64\Debug\vc110.pdb" /Gd /TP /errorReport:prompt SelectiveVideoCompensatorDlg.cpp
-         SelectiveVideoCompensatorDlg.cpp
-     1>C:\openCV3\opencv\build\include\opencv2/core/mat.hpp(1965): warning C4819: 현재 코드 페이지(949)에서 표시할 수 없는 문자가 파일에 들어 있습니다. 데이터가 손실되지 않게 하려면 해당 파일을 유니코드 형식으로 저장하십시오.
-     1>C:\openCV3\opencv\build\include\opencv2/core/persistence.hpp : warning C4819: 현재 코드 페이지(949)에서 표시할 수 없는 문자가 파일에 들어 있습니다. 데이터가 손실되지 않게 하려면 해당 파일을 유니코드 형식으로 저장하십시오.
-     1>C:\openCV3\opencv\build\include\opencv2/core/utility.hpp : warning C4819: 현재 코드 페이지(949)에서 표시할 수 없는 문자가 파일에 들어 있습니다. 데이터가 손실되지 않게 하려면 해당 파일을 유니코드 형식으로 저장하십시오.
-     1>SelectiveVideoCompensatorDlg.cpp(607): warning C4244: '인수' : 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>SelectiveVideoCompensatorDlg.cpp(611): warning C4244: '인수' : 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>SelectiveVideoCompensatorDlg.cpp(615): warning C4244: '인수' : 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>SelectiveVideoCompensatorDlg.cpp(619): warning C4244: '인수' : 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>SelectiveVideoCompensatorDlg.cpp(623): warning C4244: '인수' : 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>SelectiveVideoCompensatorDlg.cpp(627): warning C4244: '인수' : 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-       Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\hyunSo\Desktop\SelectiveVideoCompensator\x64\Debug\SelectiveVideoCompensator.exe" /INCREMENTAL /NOLOGO /LIBPATH:C:\openCV3\opencv\build\x64\vc11\staticlib /LIBPATH:C:\openCV3\opencv\build\x64\vc11\lib /LIBPATH:"C:\Program Files (x86)\Visual Leak Detector\lib\Win32" /LIBPATH:"C:\Program Files (x86)\Visual Leak Detector\lib\Win64" opencv_ts300d.lib opencv_world300d.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /manifestinput:"C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\Include\Manifest\dpiaware.manifest" /DEBUG /PDB:"C:\Users\hyunSo\Desktop\SelectiveVideoCompensator\x64\Debug\SelectiveVideoCompensator.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /ENTRY:"wWinMainCRTStartup" /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\hyunSo\Desktop\SelectiveVideoCompensator\x64\Debug\SelectiveVideoCompensator.lib" /MACHINE:X64 x64\Debug\SelectiveVideoCompensator.res
+     1>Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\hyunSo\Desktop\SelectiveVideoCompensator\x64\Debug\SelectiveVideoCompensator.exe" /INCREMENTAL /NOLOGO /LIBPATH:C:\openCV3\opencv\build\install\x86\vc11\staticlib /LIBPATH:C:\openCV3\opencv\build\install\x86\vc11\lib /LIBPATH:C:\openCV3\opencv\build\x64\vc11\staticlib /LIBPATH:C:\openCV3\opencv\build\x64\vc11\lib /LIBPATH:"C:\Program Files (x86)\Visual Leak Detector\lib\Win32" /LIBPATH:"C:\Program Files (x86)\Visual Leak Detector\lib\Win64" opencv_bgsegm300d.lib opencv_ts300d.lib opencv_world300d.lib opencv_bioinspired300d.lib opencv_calib3d300d.lib opencv_ccalib300d.lib opencv_core300d.lib opencv_dpm300d.lib opencv_face300d.lib opencv_features2d300d.lib opencv_flann300d.lib opencv_fuzzy300d.lib opencv_hal300d.lib opencv_highgui300d.lib opencv_imgcodecs300d.lib opencv_imgproc300d.lib opencv_line_descriptor300d.lib opencv_ml300d.lib opencv_objdetect300d.lib opencv_phase_unwrapping300d.lib opencv_photo300d.lib opencv_plot300d.lib opencv_reg300d.lib opencv_rgbd300d.lib opencv_saliency300d.lib opencv_shape300d.lib opencv_stereo300d.lib opencv_stitching300d.lib opencv_structured_light300d.lib opencv_superres300d.lib opencv_surface_matching300d.lib opencv_tracking300d.lib opencv_video300d.lib opencv_videoio300d.lib opencv_videostab300d.lib opencv_xobjdetect300d.lib ippicvmt.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /manifestinput:"C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\Include\Manifest\dpiaware.manifest" /DEBUG /PDB:"C:\Users\hyunSo\Desktop\SelectiveVideoCompensator\x64\Debug\SelectiveVideoCompensator.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /ENTRY:"wWinMainCRTStartup" /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\hyunSo\Desktop\SelectiveVideoCompensator\x64\Debug\SelectiveVideoCompensator.lib" /MACHINE:X64 x64\Debug\SelectiveVideoCompensator.res
          x64\Debug\SelectiveVideoCompensator.obj
          x64\Debug\SelectiveVideoCompensatorDlg.obj
          x64\Debug\stdafx.obj
-         SelectiveVideoCompensator.vcxproj -> C:\Users\hyunSo\Desktop\SelectiveVideoCompensator\x64\Debug\SelectiveVideoCompensator.exe
-     1>"C:\Users\hyunSo\Desktop\SelectiveVideoCompensator\SelectiveVideoCompensator\SelectiveVideoCompensator.vcxproj" 프로젝트를 빌드했습니다(Build 대상).
+     1>SelectiveVideoCompensatorDlg.obj : error LNK2019: "public: bool __cdecl cv::Tracker::init(class cv::_InputArray const &,class cv::Rect_<double> const &)" (?init@Tracker@cv@@QEAA_NAEBV_InputArray@2@AEBV?$Rect_@N@2@@Z) 외부 기호(참조 위치: "public: void __cdecl CSelectiveVideoCompensatorDlg::OnBnClickedStart(void)" (?OnBnClickedStart@CSelectiveVideoCompensatorDlg@@QEAAXXZ) 함수)에서 확인하지 못했습니다.
+     1>SelectiveVideoCompensatorDlg.obj : error LNK2019: "public: bool __cdecl cv::Tracker::update(class cv::_InputArray const &,class cv::Rect_<double> &)" (?update@Tracker@cv@@QEAA_NAEBV_InputArray@2@AEAV?$Rect_@N@2@@Z) 외부 기호(참조 위치: "public: void __cdecl CSelectiveVideoCompensatorDlg::OnBnClickedStart(void)" (?OnBnClickedStart@CSelectiveVideoCompensatorDlg@@QEAAXXZ) 함수)에서 확인하지 못했습니다.
+     1>C:\Users\hyunSo\Desktop\SelectiveVideoCompensator\x64\Debug\SelectiveVideoCompensator.exe : fatal error LNK1120: 2개의 확인할 수 없는 외부 참조입니다.
+     1>"C:\Users\hyunSo\Desktop\SelectiveVideoCompensator\SelectiveVideoCompensator\SelectiveVideoCompensator.vcxproj" 프로젝트를 빌드했습니다(Build 대상). - 실패
 
-빌드했습니다.
+빌드하지 못했습니다.
 
-경과 시간: 00:00:01.90
+경과 시간: 00:00:00.39

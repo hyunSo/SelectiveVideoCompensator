@@ -10,7 +10,7 @@
 #include "opencv\cxcore.h"
 #include "opencv2\highgui\highgui.hpp"
 #include "opencv2\imgproc\imgproc.hpp"
-
+#include "opencv2\tracking\tracker.hpp"
 #include <iostream>
 
 using namespace cv;
@@ -264,7 +264,7 @@ void CSelectiveVideoCompensatorDlg::DisplayImage(int IDC_PICTURE_TARGET, Mat tar
 		}
 
 		bitmapInfo.bmiHeader.biBitCount = tempImage->depth * tempImage->nChannels;
-
+	
 		dcImageTraget.SetStretchBltMode(COLORONCOLOR);
 		::StretchDIBits(dcImageTraget.GetSafeHdc(), rcImageTraget.left, rcImageTraget.top, rcImageTraget.right, rcImageTraget.bottom,	
 			0, 0, tempImage->width, tempImage->height, tempImage->imageData, &bitmapInfo, DIB_RGB_COLORS, SRCCOPY);
@@ -421,11 +421,6 @@ Mat ImageCompensate(){
 	}
 	matFrameAdjust = tmp.clone();	
 
-	int minY = MAX(LTy - rect.height / 5, 0);
-	int minX = MAX(LTx - rect.width / 5, 0);
-	int maxY = MAX(LTy + rect.height / 5, matFrame.rows);
-	int maxX = MAX(LTx + rect.width / 5, matFrame.cols);
-
 	for(int y = LTy; y < RBy; y++) {
 		for(int x = LTx; x < RBx; x++) {
 			matFrameAdjust.at<Vec3b>(y,x)[0] =
@@ -440,7 +435,7 @@ Mat ImageCompensate(){
 	Mat ROI(matFrameAdjust, rect);
 	Mat result(matFrameAdjust);
 	ROI.copyTo(matFrameCrop);
-	rectangle(matFrameAdjust, rect, CV_RGB(255, 0, 0), 2, 8, 0); 
+//	rectangle(matFrameAdjust, rect, CV_RGB(255, 0, 0), 2, 8, 0); 
 	
 	imshow("ROI", matFrameCrop);
 
@@ -631,11 +626,25 @@ void CSelectiveVideoCompensatorDlg::OnBnClickedStart()
 	if (!writer.isOpened()){
 		return;
 	}
+	
+	Rect2d box(LTx, LTy, RBx - LTx, RBy - LTy);
+	Rect tmp(LTx, LTy, RBx, RBy);
+	Ptr<Tracker> tracker = TrackerKCF::create();
+	tracker->init(matFrame, box);
 	while (1){
 		if (!capture.read(matFrame))             
 			break;
+		tracker->update(matFrame, box);
+//		rectangle(matFrame, box, Scalar( 255, 0, 0 ), 2, 1 );
+		LTx = MAX(0, box.x); 
+		LTy = MAX(0, box.y);
+		RBx = MIN(matFrame.cols, box.x + box.width);
+		RBy = MIN(matFrame.rows, box.y + box.height);
 		writer.write(ImageCompensate());
 	}
+	LTx = tmp.x; 		LTy = tmp.y;
+	RBx = tmp.width; 	RBy = tmp.height;
+
 	capture.release();
 	writer.release();
 	cvDestroyWindow("ROI");
