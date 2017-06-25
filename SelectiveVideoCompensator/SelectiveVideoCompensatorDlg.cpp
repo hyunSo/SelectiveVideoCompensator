@@ -435,14 +435,15 @@ Mat ImageCompensate(){
 	}
 	Mat ROI = Mat(matFrameAdjust, rect);
 	if (posSm == 1){	//Bayer 2x2
-		medianBlur(tmp, matFrameAdjust, 9.0);
+		medianBlur(matFrameAdjust, tmp, 5.0);
+		ROI = Mat(tmp, rect);
 	}
 	else if (posSm == 2){	//Bayer 2x2
-		GaussianBlur(tmp, matFrameAdjust, Size(9, 9), 3.0, 3.0);
+		GaussianBlur(matFrameAdjust, tmp, Size(9, 9), 3.0, 3.0);
 		int x = MAX(0, rect.x - rect.width/5);
 		int y = MAX(0, rect.y - rect.height/5);
 		rect = Rect(x, y, MIN(rect.width * 1.2, matFrame.cols - x), MIN(rect.height * 1.2, matFrame.rows - y));
-		ROI = Mat(matFrameAdjust, rect);
+		ROI = Mat(tmp, rect);
 	}	
 
 	ROI.copyTo(matFrameCrop(rect));
