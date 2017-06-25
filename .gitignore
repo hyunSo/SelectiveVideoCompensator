@@ -42,6 +42,5 @@
 *.idb
 *.log
 *.plog
-*.vcxproj
 *.ipch
 *.pdb

@@ -12,6 +12,7 @@
 #include "opencv2\imgproc\imgproc.hpp"
 #include "opencv2\tracking\tracker.hpp"
 #include <iostream>
+#include <math.h>
 
 using namespace cv;
 
@@ -276,7 +277,7 @@ void CSelectiveVideoCompensatorDlg::DisplayImage(int IDC_PICTURE_TARGET, Mat tar
 void CSelectiveVideoCompensatorDlg::OnFileOpen()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	CString szFilter = _T("Video Files (*.mp4)|*.mp4|All Files (*.*)|*.*|");
+	CString szFilter = _T("Video Files|*.mp4;*.avi|All Files (*.*)|*.*|");
     CFileDialog dlg(TRUE, NULL, NULL, OFN_EXPLORER | OFN_HIDEREADONLY, szFilter);
  
 	if (IDOK == dlg.DoModal())
@@ -420,6 +421,7 @@ Mat ImageCompensate(){
 		matFrameCrop.copyTo(tmp(rect));
 	}
 	matFrameAdjust = tmp.clone();	
+	matFrameCrop = matFrame.clone();	
 
 	for(int y = LTy; y < RBy; y++) {
 		for(int x = LTx; x < RBx; x++) {
@@ -431,17 +433,24 @@ Mat ImageCompensate(){
 				saturate_cast<uchar>((double)posH * (double)tmp.at<Vec3b>(y,x)[2] * (double)posBr * posR);		
 		}
 	}
+	Mat ROI = Mat(matFrameAdjust, rect);
+	if (posSm == 1){	//Bayer 2x2
+		medianBlur(tmp, matFrameAdjust, 9.0);
+	}
+	else if (posSm == 2){	//Bayer 2x2
+		GaussianBlur(tmp, matFrameAdjust, Size(9, 9), 3.0, 3.0);
+		int x = MAX(0, rect.x - rect.width/5);
+		int y = MAX(0, rect.y - rect.height/5);
+		rect = Rect(x, y, MIN(rect.width * 1.2, matFrame.cols - x), MIN(rect.height * 1.2, matFrame.rows - y));
+		ROI = Mat(matFrameAdjust, rect);
+	}	
 
-	Mat ROI(matFrameAdjust, rect);
-	Mat result(matFrameAdjust);
-	ROI.copyTo(matFrameCrop);
-//	rectangle(matFrameAdjust, rect, CV_RGB(255, 0, 0), 2, 8, 0); 
+	ROI.copyTo(matFrameCrop(rect));
+	Mat result(matFrameCrop);
 	
-	imshow("ROI", matFrameCrop);
-
-	Master->DisplayImage(IDC_FRAME_ADJUSTED, matFrameAdjust);
-	Master->ColorHistogram(IDC_HIST_COLOR, matFrameCrop);
-	Master->GreyHistogram(IDC_HIST_COLOR, matFrameCrop);
+	Master->DisplayImage(IDC_FRAME_ADJUSTED, matFrameCrop);
+	Master->ColorHistogram(IDC_HIST_COLOR, ROI);
+	Master->GreyHistogram(IDC_HIST_COLOR, ROI);
 	
 	return result;
 }
@@ -455,6 +464,7 @@ void CSelectiveVideoCompensatorDlg::OnNMReleasedcaptureSliderRed(NMHDR *pNMHDR, 
 	str.Format(_T("%.2lf"), posR); //Format을 이용하여 int값을 변경
 	SetDlgItemText(IDC_EDIT3, str);
 	ImageCompensate();
+	imshow("ROI", matFrameCrop);
 }
 
 
@@ -466,6 +476,7 @@ void CSelectiveVideoCompensatorDlg::OnNMReleasedcaptureSliderGreen(NMHDR *pNMHDR
 	str.Format(_T("%.2lf"), posG); //Format을 이용하여 int값을 변경
 	SetDlgItemText(IDC_EDIT4, str);
 	ImageCompensate();
+	imshow("ROI", matFrameCrop);
 }
 
 
@@ -477,6 +488,7 @@ void CSelectiveVideoCompensatorDlg::OnNMReleasedcaptureSliderBlue(NMHDR *pNMHDR,
 	str.Format(_T("%.2lf"), posB); //Format을 이용하여 int값을 변경
 	SetDlgItemText(IDC_EDIT5, str);
 	ImageCompensate();
+	imshow("ROI", matFrameCrop);
 }
 
 
@@ -489,6 +501,7 @@ void CSelectiveVideoCompensatorDlg::OnNMReleasedcaptureSliderHistogram(NMHDR *pN
 	str.Format(_T("%.2lf"), posH); //Format을 이용하여 int값을 변경
 	SetDlgItemText(IDC_EDIT6, str);
 	ImageCompensate();
+	imshow("ROI", matFrameCrop);
 }
 
 
@@ -500,6 +513,7 @@ void CSelectiveVideoCompensatorDlg::OnNMReleasedcaptureSliderBrightness(NMHDR *p
 	str.Format(_T("%.2lf"), posBr); //Format을 이용하여 int값을 변경
 	SetDlgItemText(IDC_EDIT7, str);
 	ImageCompensate();
+	imshow("ROI", matFrameCrop);
 }
 
 
@@ -509,6 +523,7 @@ void CSelectiveVideoCompensatorDlg::OnNMReleasedcaptureSliderSmoothing(NMHDR *pN
 	*pResult = 0;
 	posSm = m_sliderSmoothing.GetPos();
 	ImageCompensate();
+	imshow("ROI", matFrameCrop);
 }
 
 
@@ -523,6 +538,7 @@ void CSelectiveVideoCompensatorDlg::OnBnClickedCheckHisto()
 		histoON = false;
 	}
 	ImageCompensate();
+	imshow("ROI", matFrameCrop);
 }
 
 
@@ -595,9 +611,10 @@ void CSelectiveVideoCompensatorDlg::OnBnClickedStart()
 	CString path_;
 	GetDlgItemText(IDC_TITLE, path_);
 	string newPath((CT2CA)path_);
+	cvDestroyWindow("ROI");
 
 	switch(m_comboCodec.GetCurSel()){
-		case PIM1:
+		case PIM1: 
 			writer.open(newPath + ".avi", CV_FOURCC('P','I','M','1'), capture.get(CV_CAP_PROP_FPS), 
 					cv::Size(capture.get(CV_CAP_PROP_FRAME_WIDTH), capture.get(CV_CAP_PROP_FRAME_HEIGHT)), true);
 			break;
@@ -647,7 +664,6 @@ void CSelectiveVideoCompensatorDlg::OnBnClickedStart()
 
 	capture.release();
 	writer.release();
-	cvDestroyWindow("ROI");
 
 	capture.open(path);
 	capture.read(matFrame);
