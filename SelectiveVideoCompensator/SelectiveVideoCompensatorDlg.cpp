@@ -79,6 +79,8 @@ CSelectiveVideoCompensatorDlg::CSelectiveVideoCompensatorDlg(CWnd* pParent /*=NU
 	, m_strBr(_T(""))
 	, m_Title(_T(""))
 	, m_checkHistoOn(FALSE)
+	, m_strpf(_T(""))
+	, m_strS(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -103,6 +105,8 @@ void CSelectiveVideoCompensatorDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_START, m_Codec);
 	DDX_Control(pDX, IDC_TITLE, m_videoTitle);
 	DDX_Text(pDX, IDC_TITLE, m_Title);
+	DDX_Text(pDX, IDC_PERFRAME, m_strpf);
+	DDX_Text(pDX, IDC_SECOND, m_strS);
 }
 
 BEGIN_MESSAGE_MAP(CSelectiveVideoCompensatorDlg, CDialogEx)
@@ -146,6 +150,10 @@ void CSelectiveVideoCompensatorDlg::Initialize_GUIs(){
 	m_strBr.SetString(str);
 	m_strH.SetString(str);
 	m_Title.SetString(_T("compensate"));
+
+	str.Format(_T("%d"), 0); //Format을 이용하여 int값을 변경
+	m_strS.SetString(str);
+	m_strpf.SetString(str);
 	UpdateData(false); //set을 해주기 위해서 UpdateData(false); 를 사용
 
 	histoON = false;
@@ -649,9 +657,13 @@ void CSelectiveVideoCompensatorDlg::OnBnClickedStart()
 	Rect tmp(LTx, LTy, RBx, RBy);
 	Ptr<Tracker> tracker = TrackerKCF::create();
 	tracker->init(matFrame, box);
+	
+	int frames = 0;
+	int s = GetTickCount();
 	while (1){
 		if (!capture.read(matFrame))             
 			break;
+		frames++;
 		tracker->update(matFrame, box);
 //		rectangle(matFrame, box, Scalar( 255, 0, 0 ), 2, 1 );
 		LTx = MAX(0, box.x); 
@@ -665,6 +677,12 @@ void CSelectiveVideoCompensatorDlg::OnBnClickedStart()
 
 	capture.release();
 	writer.release();
+	s = GetTickCount() - s;
+	str.Format(_T("%d"), s); //Format을 이용하여 int값을 변경
+	SetDlgItemText(IDC_SECOND, str);
+
+	str.Format(_T("%.6lf"), s/(double)frames); //Format을 이용하여 int값을 변경
+	SetDlgItemText(IDC_PERFRAME, str);
 
 	capture.open(path);
 	capture.read(matFrame);

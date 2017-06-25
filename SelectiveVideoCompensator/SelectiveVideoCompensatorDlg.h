@@ -82,5 +82,7 @@ public:
 	afx_msg void OnEditReset();
 	CEdit m_videoTitle;
 	CString m_Title;
+	CString m_strpf;
+	CString m_strS;
 };
 
