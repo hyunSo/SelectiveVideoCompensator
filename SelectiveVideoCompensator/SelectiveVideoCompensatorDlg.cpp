@@ -97,7 +97,7 @@ void CSelectiveVideoCompensatorDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT4, m_strG);
 	DDX_Text(pDX, IDC_EDIT5, m_strB);
 	DDX_Text(pDX, IDC_EDIT6, m_strH);
-	DDX_Text(pDX, IDC_EDIT7, m_strBr);
+	DDX_Text(pDX, IDC_EDIT8, m_strBr);
 	DDX_Check(pDX, IDC_CHECK_HISTO, m_checkHistoOn);
 	DDX_Control(pDX, IDC_CHECK_HISTO, m_checkHisto);
 	DDX_Control(pDX, IDC_SLIDER_SM, m_sliderSmoothing);
@@ -126,7 +126,7 @@ BEGIN_MESSAGE_MAP(CSelectiveVideoCompensatorDlg, CDialogEx)
 	ON_EN_CHANGE(IDC_EDIT4, &CSelectiveVideoCompensatorDlg::OnEnChangeEdit4)
 	ON_EN_CHANGE(IDC_EDIT5, &CSelectiveVideoCompensatorDlg::OnEnChangeEdit5)
 	ON_EN_CHANGE(IDC_EDIT6, &CSelectiveVideoCompensatorDlg::OnEnChangeEdit6)
-	ON_EN_CHANGE(IDC_EDIT7, &CSelectiveVideoCompensatorDlg::OnEnChangeEdit7)
+	ON_EN_CHANGE(IDC_EDIT8, &CSelectiveVideoCompensatorDlg::OnEnChangeEdit7)
 	ON_COMMAND(ID_EDIT_BOUNDARY, &CSelectiveVideoCompensatorDlg::OnEditBoundary)
 	ON_COMMAND(ID_EDIT_RESET, &CSelectiveVideoCompensatorDlg::OnEditReset)
 	ON_BN_CLICKED(IDC_CHECK_HISTO, &CSelectiveVideoCompensatorDlg::OnBnClickedCheckHisto)
@@ -520,7 +520,7 @@ void CSelectiveVideoCompensatorDlg::OnNMReleasedcaptureSliderBrightness(NMHDR *p
 	*pResult = 0;
 	posBr = (double)m_sliderBrightness.GetPos()/100.0;
 	str.Format(_T("%.2lf"), posBr); //Format을 이용하여 int값을 변경
-	SetDlgItemText(IDC_EDIT7, str);
+	SetDlgItemText(IDC_EDIT8, str);
 	ImageCompensate();
 	imshow("ROI", matFrameCrop);
 }
@@ -672,12 +672,12 @@ void CSelectiveVideoCompensatorDlg::OnBnClickedStart()
 		RBy = MIN(matFrame.rows, box.y + box.height);
 		writer.write(ImageCompensate());
 	}
+	s = GetTickCount() - s;
 	LTx = tmp.x; 		LTy = tmp.y;
 	RBx = tmp.width; 	RBy = tmp.height;
 
 	capture.release();
 	writer.release();
-	s = GetTickCount() - s;
 	str.Format(_T("%d"), s); //Format을 이용하여 int값을 변경
 	SetDlgItemText(IDC_SECOND, str);
 
@@ -687,7 +687,7 @@ void CSelectiveVideoCompensatorDlg::OnBnClickedStart()
 	capture.open(path);
 	capture.read(matFrame);
 	DisplayImage(IDC_FRAME_ORIGIN, matFrame);
-	ImageCompensate();
+	matFrameAdjust =Mat(ImageCompensate());
 	DisplayImage(IDC_FRAME_ADJUSTED, matFrameAdjust);
 	ColorHistogram(IDC_HIST_COLOR, matFrameAdjust);
 	GreyHistogram(IDC_HIST_COLOR, matFrameAdjust);
